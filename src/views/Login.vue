@@ -1,0 +1,139 @@
+<template>
+  <div class="Land">
+    <div class="loginTitle">学生教务系统</div>
+    <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="60px" class="demo-ruleForm">
+      <el-form-item prop="name" label="账号">
+        <el-input v-model="ruleForm2.name"></el-input>
+      </el-form-item>
+      <el-form-item label="密码" prop="pass">
+        <el-input type="password" v-model="ruleForm2.pass" auto-complete="off"></el-input>
+      </el-form-item>
+      <div class="dxkBox">
+        <el-radio v-model="$store.state.userJob" label="1">学生</el-radio>
+        <el-radio v-model="$store.state.userJob" label="2">老师</el-radio>
+        <el-radio v-model="$store.state.userJob" label="3">管理员</el-radio>
+      </div>
+      <el-form-item>
+        <el-button type="primary" @click="submitForm('ruleForm2')">提交</el-button>
+        <el-button @click="resetForm('ruleForm2')">重置</el-button>
+      </el-form-item>
+
+    </el-form>
+  </div>
+</template>
+
+<script>
+  export default {
+    data() {
+      var checkAge = (rule, value, callback) => {
+        if (!value) {
+          return callback(new Error('账号不能为空'));
+        }
+      };
+      var validatePass = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入密码'));
+        } else {
+          if (this.ruleForm2.checkPass !== '') {
+            this.$refs.ruleForm2.validateField('checkPass');
+          }
+          callback();
+        }
+      };
+      return {
+      //   ymUserJob:  his.$store.state.userJob,
+        ruleForm2: {
+          pass: '',
+          name: ''
+        },
+        rules2: {
+          pass: [
+            { required: true,validator: validatePass, trigger: 'blur' }
+          ],
+          name: [{required: true, message: '不能为空', trigger: 'blur'},
+            {pattern: /^\d+$/, message: '用户名只能为学号', trigger: 'blur'}],
+        }
+      };
+    },
+    mounted:function(){
+      this.loginFlagCsh()
+    },
+    methods: {
+      loginFlagCsh(){
+        this.$store.state.loginFlag=false;
+        console.log(this.$store.state.loginFlag);
+      },
+      submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid&&this.ruleForm2.name=='123'&&this.ruleForm2.pass=='123') {
+            if(this.$store.state.userJob=='1'){
+              alert('学生身份进入');
+              this.$router.push({
+                name:'Index',
+                params:{
+                  studentId:this.ruleForm2.name
+                }
+              })
+            }
+              // this.$router.push({path:'/'})
+            if(this.$store.state.userJob=='2'){
+              alert("老师身份进入")
+              this.$router.push({path:'/teacher'})
+            }
+            if(this.$store.state.userJob=='3'){
+              alert("管理员身份进入")
+              this.$router.push({path:'/admin'})
+            }
+
+
+            this.$store.state.loginFlag=true;
+            console.log(this.$store.state.loginFlag);
+          } else {
+            alert('密码错误');
+            // return false;
+          }
+        });
+      },
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      }
+    }
+  }
+</script>
+
+<style scoped>
+  html,body{
+    width:100%;
+    height:100%;
+    /*background: url(../../build/beijin.jpg) no-repeat;*/
+    background-size: 100% 100%;
+
+  }
+  #app .topzi{
+    font-size: 40px;
+    margin-bottom: 20px;
+  }
+  #app .Land{
+    width: 30%;
+    position:fixed;
+    top:20%;
+    left: 0;
+    right: 0;
+    margin:0 auto;
+    border: 1px solid #409EFF;
+    padding: 40px;
+  }
+
+  .loginTitle{
+    color:#409EFF;
+    margin-bottom:30px;
+    font-size:20px;
+    text-align:center;
+  }
+
+  .dxkBox{
+    margin:10px 0 20px 60px;
+    /*background:pink;*/
+  }
+
+</style>

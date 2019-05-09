@@ -1,0 +1,468 @@
+<template>
+    <div class="kbcx">
+        <!--<nav-header></nav-header>-->
+        <div class="kb-box">
+          <div class="box1">
+            <p>/</p>
+            <ul v-for="(item,index) in lefto">
+              <li class="every-class">{{item}}</li>
+            </ul>
+          </div>
+          <div class="box1" v-for="(bigItem,index0) in kbMsg">
+            <p>周{{index0+1}}</p>
+            <ul v-for="(item,index) in bigItem" class="every-class">
+              <li>课程：{{item.name}}</li>
+              <li>老师：{{item.teacher}}</li>
+              <li>教室：{{item.place}}</li>
+            </ul>
+          </div>
+        </div>
+        <!--<div class="box2">-->
+          <!--<h3>周二课程</h3>-->
+          <!--<ul v-for="(item,index) in kbMsg[1]">-->
+            <!--<li>课程：{{item.name}}</li>-->
+            <!--<li>老师：{{item.teacher}}</li>-->
+            <!--<li>教室：{{item.place}}</li>-->
+          <!--</ul>-->
+        <!--</div>-->
+
+
+    </div>
+</template>
+
+<script>
+  import NavHeader from '@/components/NavHeader'
+export default {
+    data(){
+      return{
+        kbMsg:[],
+        lefto:['第一节','2','3','4','5','6','7','8','9','10','11','12','13']
+      }
+    },
+    mounted() {
+      this.loginFlagCsh()
+    },
+    methods:{
+      loginFlagCsh(){
+        this.kbMsg=[[{
+          name:'数据结构',
+          teacher:'万静',
+          place:'B201'
+        },
+          {
+            name:'大雾',
+            teacher:'张',
+            place:'B202'
+          },
+          {
+            name:'人工智能',
+            teacher:'刘',
+            place:'B203'
+          },
+          {
+
+          },
+          {
+            name:'数据结构',
+            teacher:'万静',
+            place:'B201'
+          },
+          {
+            name:'大雾',
+            teacher:'张',
+            place:'B202'
+          },
+          {
+            name:'人工智能',
+            teacher:'刘',
+            place:'B203'
+          },
+          {
+
+          },
+          {
+            name:'数据结构',
+            teacher:'万静',
+            place:'B201'
+          },
+          {
+            name:'大雾',
+            teacher:'张',
+            place:'B202'
+          },
+          {
+            name:'人工智能',
+            teacher:'刘',
+            place:'B203'
+          },
+          {
+
+          },
+          {}],
+          [{
+            name:'数据结构',
+            teacher:'万静',
+            place:'B201'
+          },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {}],
+          [{
+            name:'数据结构',
+            teacher:'万静',
+            place:'B201'
+          },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {}],
+          [{
+            name:'数据结构',
+            teacher:'万静',
+            place:'B201'
+          },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {}],
+          [{
+            name:'数据结构',
+            teacher:'万静',
+            place:'B201'
+          },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {}],
+          [{
+            name:'数据结构',
+            teacher:'万静',
+            place:'B201'
+          },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {}],
+          [{
+            name:'数据结构',
+            teacher:'万静',
+            place:'B201'
+          },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {}]]
+        // this.kb()
+        console.log(this.kbMsg);
+        this.$store.state.loginFlag=true;
+        this.$store.state.userJob='1';
+      },
+    }
+  // components:{NavHeader}
+}
+</script>
+
+<style scoped lang="scss">
+  .kbcx{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    /*background:pink;*/
+  }
+  .kb-box{
+    margin-top:30px;
+    background:floralwhite;
+    padding:30px 80px;
+  }
+  .box1{
+    float:left;
+    margin-left:10px;
+    ul{
+      border:1px solid powderblue;
+    }
+  }
+  .every-class{
+    margin-top:2px;
+    background:rgba(173,216,230,0.6);
+
+    width:140px;
+    height:100px;
+  }
+</style>
