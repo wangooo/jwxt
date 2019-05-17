@@ -20,12 +20,12 @@ export default new Router({
 
     //学生界面
     {
-    path: '/login',
+    path: '/',
     name: 'Login',
-    component: Login
+    component: Login,
     },
     {
-      path: '/',
+      path: '/index',
       name: 'Index',
       component: Index
     },

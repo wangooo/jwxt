@@ -32,7 +32,9 @@
         this.$router.push({path:'/admin'});
       },
       logout(){
-        this.$router.push({path:'/login'});
+        var storage=window.localStorage;
+        storage.clear();
+        this.$router.push({path:'/'});
       }
     }
   }

@@ -48,7 +48,9 @@
         this.$router.push({path:'/bsteacher'});
       },
       logout(){
-        this.$router.push({path:'/login'});
+        var storage=window.localStorage;
+        storage.clear();
+        this.$router.push({path:'/'});
       }
     }
   }

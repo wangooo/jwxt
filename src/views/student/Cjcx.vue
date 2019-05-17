@@ -3,7 +3,7 @@
       <!--<nav-header></nav-header>-->
         <div class="main">
             <p class="viewsTitle">| 学生成绩查询 |</p>
-            <div class="search-con center">
+            <div class="search-con">
               <div class="left">
                 <span class="small-font">学年</span>
                 <template>
@@ -27,13 +27,16 @@
                     </el-option>
                   </el-select>
                 </template>
-                <el-button size="small" icon="el-icon-search" class="ml">搜索</el-button>
+                <el-button size="small" icon="el-icon-search" class="ml" @click="searchGrade(sid,value1,value2)">搜索</el-button>
                 <el-button size="small" icon="el-icon-upload2" @click="addd">导出</el-button>
+                <el-tag type="success" style="float:right">总GPA为：{{sumGpa}}</el-tag>
               </div>
             </div>
             <div class="table-con">
               <el-table
-                :data="list"
+                :data="myList.slice((currentPage-1)*pageSize,currentPage*pageSize)"
+                stripe
+                size="mini"
                 border
                 style="width: 100%">
                 <el-table-column
@@ -63,11 +66,6 @@
                   width="120">
                 </el-table-column>
                 <el-table-column
-                  prop="grade_ps"
-                  label="成绩备注"
-                  width="120">
-                </el-table-column>
-                <el-table-column
                   prop="jidian"
                   label="绩点"
                   width="120">
@@ -83,64 +81,48 @@
                   width="100">
                 </el-table-column>
                 <el-table-column
-                  prop="xx"
-                  label="xxxx"
-                  width="100">
-                </el-table-column>
-                <el-table-column
                   fixed="right"
                   label="操作"
                   width="100">
                   <template slot-scope="scope">
-                    <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-                    <el-button type="text" size="small">编辑</el-button>
+                    <el-button @click="handleClick(scope.row)" type="text" size="small">查看成绩</el-button>
                   </template>
                 </el-table-column>
               </el-table>
+               <div class="block" style="margin-top:15px;">
+                  <el-pagination align='center' @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[1,5,10,20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="myList.length">
+                  </el-pagination>
+              </div>
+              <!-- <div class="paginationClass">
+                <el-pagination
+                @size-change="handleSizeChange1"
+                @current-change="handleCurrentChange1" :current-page="currentPage1"
+                :page-sizes="[10, 20, 50, 100]"
+                :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
+                :total="total1">
+                </el-pagination>
+              
+              </div> -->
             </div>
 
         </div>
         <div v-bind:class='{"zhezhao":zhezhaoFlag}'></div>
-        <!--<div class="checkGrade" v-show="checkGradeFlag">-->
-          <!--<el-button @click="closeCheck" size="mini" icon="el-icon-circle-close" class="closeBtn">关闭</el-button>-->
-          <!--<ul>-->
-            <!--<li>{{checkAll.class_id}}</li>-->
-            <!--<li>{{checkAll.class_state}}</li>-->
-            <!--<li>{{checkAll.xuefen}}</li>-->
-            <!--<li>{{checkAll.grade}}</li>-->
-            <!--<li>{{checkAll.grade_ps}}</li>-->
-          <!--</ul>-->
           <el-card class="checkGrade" v-show="checkGradeFlag">
             <div slot="header" class="clearfix">
-              <span>所有信息</span>
+              <span>成绩信息</span>
               <el-button @click="closeCheck" size="mini" icon="el-icon-circle-close" class="closeBtn">关闭</el-button>
-
             </div>
-            <div class="text item">
-              {{'课程名字 ' + checkAll.class_name }}
-              <br>
-              {{'课程id ' + checkAll.class_id }}
-              <br>
-              {{'课程代码 ' + checkAll.class_state }}
-              <br>
-              {{'学分 ' + checkAll.xuefen }}
-              <br>
-              {{'列表内容 ' + checkAll.grade }}
-              <br>
-              {{'列表内容 ' + checkAll.grade_ps }}
-              <br>
-              {{'列表内容 ' + checkAll.jidian }}
-              <br>
-              {{'列表内容 ' + checkAll.xueyuan }}
+            <div class="grade-item">
+              <div>平时成绩：</div>
+              <div>期末成绩：</div>
+              <div>总成绩：</div>
             </div>
           </el-card>
-        <!--</div>-->
-
     </div>
 </template>
 
 <script>
-
+  import axios from 'axios'
   import navHeader from '@/components/NavHeader'
 
 export default {
@@ -148,86 +130,98 @@ export default {
       return {
         checkGradeFlag:false,
         zhezhaoFlag:false,
-        list:[
-          {
-          class_name: '高数',
-          class_id: '000001',
-          class_state: '必修',
-          xuefen: '4',
-          grade: 78,
-          grade_ps: 200333,
-          jidian:2.22,
-          xueyuan:'信息学院',
-          teacher:'王老师',
-          xx:'111'
-        },
-          {
-            class_name: '大雾',
-            class_id: '000002',
-            class_state: '必修',
-            xuefen: '2',
-            grade: 70,
-            grade_ps: 20022233,
-            jidian:2.62,
-            xueyuan:'信息学院',
-            teacher:'张老师',
-            xx:'222'
-          }],
+        myList:[],
+        sumGpa:0,
+        currentPage: 1, // 当前页码
+            total: 20, // 总条数
+            pageSize: 5, // 每页的数据条数
+        // myList:[
+        //   {
+        //   class_name: '高数',
+        //   class_id: '000001',
+        //   class_state: '必修',
+        //   xuefen: '4',
+        //   grade: 78,
+        //   grade_ps: 200333,
+        //   jidian:2.22,
+        //   xueyuan:'信息学院',
+        //   teacher:'王老师'
+        // },
+        //   {
+        //     class_name: '大雾',
+        //     class_id: '000002',
+        //     class_state: '必修',
+        //     xuefen: '2',
+        //     grade: 70,
+        //     grade_ps: 20022233,
+        //     jidian:2.62,
+        //     xueyuan:'信息学院',
+        //     teacher:'张老师'
+        //   }],
         checkAll:'',
 
         options1: [{
           value: '选项1',
-          label: '黄金糕'
+          label: '2016-2017'
         }, {
           value: '选项2',
-          label: '双皮奶'
+          label: '2017-2018'
         }, {
           value: '选项3',
-          label: '蚵仔煎'
+          label: '2018-2019'
         }, {
           value: '选项4',
-          label: '龙须面'
-        }, {
+          label: '2019-2020'
+        },
+        {
           value: '选项5',
-          label: '北京烤鸭'
+          label: '全部'
         }],
         value1: '',
         options2: [{
           value: '选项1',
-          label: '黄金糕'
+          label: '学期一'
         }, {
           value: '选项2',
-          label: '双皮奶'
+          label: '学期二'
         }, {
           value: '选项3',
-          label: '蚵仔煎'
-        }, {
+          label: '学期三'
+        },
+        {
           value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
+          label: '全部'
         }],
-        value2: ''
+        value2: '',
+        sid:''
       }
     },
   mounted() {
     this.loginFlagCsh()
   },
     methods: {
+      handleSizeChange(val) {
+            console.log(`每页 ${val} 条`);
+            this.currentPage = 1;
+            this.pageSize = val;
+        },
+        handleCurrentChange(val) {
+            console.log(`当前页: ${val}`);
+            this.currentPage = val;
+        },
       loginFlagCsh(){
         this.$store.state.loginFlag=true;
         this.$store.state.userJob='1';
       },
       handleClick(row) {
-        alert(this.$store.state.userJob);
         this.checkAll=row;
-        console.log(row);
+        console.log("成绩为："+row.grade);
         this.checkGradeFlag=true;
         this.zhezhaoFlag=true;
       },
       addd(){
-        var neww={class_name: 'java',
+        var neww={
+          class_name: 'java',
           class_id: '000003',
           class_state: '必修',
           xuefen: '4',
@@ -235,15 +229,41 @@ export default {
           grade_ps: 200333,
           jidian:2.22,
           xueyuan:'信息学院',
-          teacher:'王老师',
-          xx:'111'
+          teacher:'王老师'
         };
-        this.list.push(neww);
+        this.myList.push(neww);
       },
       closeCheck(){
         this.checkGradeFlag=false;
         this.zhezhaoFlag=false;
+      },
+      searchGrade(sid,value1,value2){
+        var storage=window.localStorage;
+        var sid=storage.getItem("user_name");
+        value1=this.value1;
+        value2=this.value2;
+        var sum=0;
+        axios.get('/student/findGradeById').then(res=>{
+          this.myList=res.data.gradeList;
+          // console.log(this.myList);
+          this.myList.forEach((val,index)=>{
+            sum+=val.jidian;
+            console.log(val.jidian)
+          })
+          this.sumGpa=(sum/(this.myList.length)).toFixed(2);
+        })
+       
+        
+        this.sumGpa=sum;
+        // alert(this.sumGpa);
+        
+      },
+      clickTest(){
+        axios.get('/test').then(res=>{
+          console.log(res.data);
+        })
       }
+
     },
   components:{navHeader}
 }
@@ -251,27 +271,32 @@ export default {
 
 <style lang='scss' scoped>
     .main{
-      /*background:yellow;*/
-        width:100%;
+        margin:0 auto;
+        // background:yellow;
+        width:80%;
         height: 100%;
-      z-index:0;
+        z-index:0;
+
     }
     .table-con{
-        width: 80%;
+        width: 100%;
         margin:0 auto;
         margin-top:40px;
-
+    }
+    .left{
+      margin-left:0;
+      // background:pink;
     }
     .search-con {
       margin-top: 30px;
-      width: 80%;
+      width: 100%;
     }
     .ml{
       margin-left:20px;
     }
     .checkGrade{
-      width: 400px;
-      height: 400px;
+      width: 450px;
+      height: 250px;
       background:white;
       position:absolute;
       top:0;
@@ -312,6 +337,13 @@ export default {
 
     .box-card {
       width: 480px;
+    }
+
+    .grade-item{
+      div{ 
+        margin:16px 0;
+      }
+     
     }
 
 </style>
