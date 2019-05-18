@@ -118,7 +118,7 @@
   }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   html,body{
     width:100%;
     height:100%;
@@ -131,13 +131,15 @@
     margin-bottom: 20px;
   }
   #app .Land{
-    width: 30%;
+    min-width:400px;
+    background:rgba(100,149,237,0.5);
+    width: 35%;
     position:fixed;
     top:20%;
     left: 0;
     right: 0;
     margin:0 auto;
-    border: 1px solid #409EFF;
+    border: 2px solid #409EFF;
     padding: 40px;
   }
 
@@ -149,8 +151,19 @@
   }
 
   .dxkBox{
-    margin:10px 0 20px 60px;
+    margin:10px 0px 20px 60px;
+    display:flex;
+    justify-content: space-around;
     /*background:pink;*/
+    .el-radio{
+      /*margin:0 60px 0 0;*/
+    }
+  }
+
+  .demo-ruleForm{
+    /*background:yellow;*/
+    padding:0 20px 0 0;
+
   }
 
 </style>

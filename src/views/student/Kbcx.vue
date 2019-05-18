@@ -42,9 +42,9 @@
             <tr v-for="(bigItem,index0) in kbMsgRer" :key="index0">
               <td>第{{index0+1}}节课</td>
               <td v-for="(items,index2) in bigItem" :key="index2">
-                <li>课程：{{items.name}}</li>
-                <li>老师：{{items.teacher}}</li>
-                <li>教室：{{items.place}}</li>
+                <li>课程：{{items.tcname}}</li>
+                <li>老师：{{items.ttname}}</li>
+                <!--<li>教室：{{items.place}}</li>-->
               </td>
             </tr>
           </tbody>
@@ -106,14 +106,32 @@ export default {
 
       searchKbById(){
         this.kbFlag=true;
-        axios.get('/student/kbcxById',{
+        this.axios.get('/api/student/xuanke/courseTable',{
           params:{
-            is:'11'
+            sid:'2016014337',
+            year:'one',
+            semester:1
           }
         }).then(res=>{
           // console.log(res.data.studentKbById);
-          console.log(res);
-          this.$store.commit('getStudentKb',res.data.studentKbById);
+          console.log(res.data);
+
+          var arr = new Array();         //先声明一维
+          for(var i=0;i<7;i++){          //一维长度为5
+            arr[i]=new Array(i);    //在声明二维
+            for(var j=0;j<13;j++){      //二维长度为5
+              var obj={
+                tcname:res.data.data.tcname[i][j],
+                ttname:res.data.data.ttname[i][j]
+              }
+              arr[i][j]=obj;
+            }
+          }
+          console.log(arr);
+
+          // this.$store.commit('getStudentKb',res.data.studentKbById);
+          this.$store.commit('getStudentKb',arr);
+
           this.$forceUpdate();
           var storage=window.localStorage;
           // var studentKb=JSON.parse(storage.getItem('student_kb'));
@@ -125,13 +143,14 @@ export default {
           }
           //2、先遍历旧数组，再动态添加数据
           for(var i=0;i<studentKb.length;i++){
-              
+
               for(var j=0;j<studentKb[i].length;j++){
                   //动态添加数据到arr1数组中
                   newArray[j][i]=studentKb[i][j];
               }
           }
           this.kbMsgRer=newArray;
+          console.log(this.kbMsgRer);
         })
       }
     },

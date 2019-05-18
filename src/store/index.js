@@ -29,7 +29,7 @@ const state = {
   xuenianNow:'2019-2020',
   xueqiNow:'2',
   studentKb:[],
-  teacherKb:[]
+  teacherKb:[],
 }
 // getters 只会依赖 state 中的成员去更新
 

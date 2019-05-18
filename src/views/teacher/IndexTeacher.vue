@@ -12,7 +12,8 @@
         name: "IndexTeacher",
         data(){
           return{
-            apost:''
+            apost:'',
+
           }
         },
         mounted() {
@@ -26,7 +27,7 @@
           trya(){
             var tid='10';
             // alert(11);
-            this.axios.get('/api/student/xuanke/getTeacherInformation',{
+            this.axios.get('/api/teacher/xuanke/getTeacherInformation',{
               params:{
                 tid:tid
               }

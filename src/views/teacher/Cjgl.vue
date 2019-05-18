@@ -32,9 +32,9 @@
               <el-select size="mini" v-model="course" placeholder="请选择">
                 <el-option
                   v-for="item in courseList"
-                  :key="item.cid"
+                  :key="item.id"
                   :label="item.cmajor+item.cname"
-                  :value="item.cid">
+                  :value="item.id">
                 </el-option>
               </el-select>
               <el-button size="mini" @click="gradeSet">确定</el-button>
@@ -52,8 +52,8 @@
           <div class="input-box" v-show="percentFlag" style="margin:20px 0 30px 0;">
             平时成绩:<el-input size="mini" :disabled="disFlag" v-model="gradePercent1"></el-input>
             实验成绩:<el-input size="mini" :disabled="disFlag" v-model="gradePercent2"></el-input>
-            期末成绩:<el-input size="mini" v-model="gradePercent3"></el-input>
-            <el-button size="mini" @click="percentChange">确定修改</el-button>
+            期末成绩:<el-input size="mini" v-model="gradePercent3" :disabled="disFlag"></el-input>
+            <el-button size="mini" @click="percentChange" :disabled="disFlag">确定修改</el-button>
             <!-- <el-input size="mini" v-for="(item,index) in parseInt(value2)" :key="index" v-model="grade[index]"></el-input> -->
           </div>
           <!-- <el-button size="mini" style="margin-left:20px;" @click="gradeBiliCheck">确定</el-button>
@@ -68,9 +68,10 @@
                 <th>学号</th>
                 <th>班级</th>
                 <th>专业</th>
-                <th>成绩1</th>
+                <th v-if="!disFlag">成绩1</th>
                 <th v-if="!disFlag">成绩2</th>
                 <th v-if="!disFlag">成绩3</th>
+                <th v-if="disFlag">成绩</th>
                 <th>总成绩</th>
                 <th v-if="!disFlag">成绩等级</th>
                 <th>操作</th>
@@ -81,14 +82,14 @@
                 <td>{{item.sname}}</td>
                 <td>{{item.sid}}</td>
                 <td>{{item.sclass}}</td>
-                <td>{{item.smajor}}</td>
-                <td><el-input v-model="item.grade1" size="mini" autosize></el-input></td>
-                <td v-if="!disFlag"><el-input v-model="item.grade2" size="mini" autosize></el-input></td>
-                <td v-if="!disFlag"><el-input v-model="item.grade3" size="mini" autosize></el-input></td>
-                <td>{{item.gradesum}}</td>
-                <td v-if="item.gradesum>=80">A</td>
-                <td v-else-if="item.gradesum>=60&&item.gradesum<80">B</td>
-                <td v-else-if="item.gradesum<60">不合格</td>
+                <td>{{item.major}}</td>
+                <td v-if="!disFlag"><el-input v-model="item.score1" size="mini" autosize></el-input></td>
+                <td v-if="!disFlag"><el-input v-model="item.score2" size="mini" autosize></el-input></td>
+                <td v-if="!disFlag"><el-input v-model="item.score3" size="mini" autosize></el-input></td>
+                <td v-if="disFlag"><el-radio v-model="item.score3" label="100">合格</el-radio>
+                  <el-radio v-model="item.score3" label="0">不合格</el-radio></td>
+                <td>{{item.score}}</td>
+                <td>{{item.scorelevel}}</td>
                 <td><el-button @click="changeStudentGrade(index)" size="mini">确定修改</el-button></td>
               </tr>
             </tbody>
@@ -154,7 +155,8 @@
           percentFlag:false,
           studentsList:[],
           flag2:false,
-          fDisabled:false
+          fDisabled:false,
+          ifhege:'100'
         }
       },
         name: "Cjgl",
@@ -190,15 +192,26 @@
             }
           },
           findCoursesByXuenianXueqi(){
+            // alert(this.xuenian);
+            // alert(this.xueqi);
+
             this.flag2=true;
             var list=[];
-            this.axios.get('/teacher/findCoursesByXuenianXueqi').then(res=>{
-              list=res.data.findCourses;
-              console.log(list);
-              this.courseList=list;
+            this.axios.get('/api/teacher/chengji/selectCourses',{
+              params:{
+                tid:'2',
+                year:this.xuenian,
+                semester:parseInt(this.xueqi)
+              }
+            }).then(res=>{
+              // list=res.data.findCourses;
+              console.log(res.data);
+              this.courseList=res.data.data;
+              // this.courseList=list;
             })
           },
           gradeSet(){
+            // alert(this.course);
             // alert(this.course);
             this.courseList.forEach((val,index)=>{
               console.log(val,index);
@@ -218,38 +231,93 @@
             this.percentFlag=true;
             var stusList=[];
             // alert(this.courseType);
-            this.axios.get('/teacher/getStudentByCname').then(res=>{
-              stusList=res.data.studentsList;
-              this.studentsList=stusList;
-              console.log(stusList);
+            this.axios.get('/api/teacher/chengji/selectGrades',{
+              params:{
+                id:this.course
+              }
+            }).then(res=>{
+              alert(res.data.data[0].ctype);
+              if(res.data.data[0].ctype=='通识教育课程'){
+                this.disFlag=true;
+              }
+              console.log(res.data);
+              this.gradePercent1=res.data.data[0].percent1;
+              this.gradePercent2=res.data.data[0].percent2;
+              this.gradePercent3=res.data.data[0].percent3;
+              this.studentsList=res.data.data;
+              // stusList=res.data.studentsList;
+              // this.studentsList=stusList;
+              // console.log(stusList);
             })
           },
           percentChange() {
             if(parseInt(this.gradePercent1)+parseInt(this.gradePercent2)+parseInt(this.gradePercent3)==100){
-             this.$confirm('此操作将修改所有学生成绩, 是否继续?', '提示', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-              type: 'warning'
-            }).then(() => {
-              this.$message({
-                type: 'success',
-                message: '修改成功!'
-              });
-            }).catch(() => {
-              this.$message({
-                type: 'info',
-                message: '已取消修改'
-              });          
-            });
+            //  this.$confirm('此操作将修改所有学生成绩, 是否继续?', '提示', {
+            //   confirmButtonText: '确定',
+            //   cancelButtonText: '取消',
+            //   type: 'warning'
+            // }).then(() => {
+            //
+            //   this.$message({
+            //     type: 'success',
+            //     message: '修改成功!'
+            //   });
+            // }).catch(() => {
+            //   this.$message({
+            //     type: 'info',
+            //     message: '已取消修改'
+            //   });
+            // });
+              this.axios.get('/api/teacher/chengji/updatePercents',{
+                params:{
+                  id:this.course,
+                  percent1:this.gradePercent1,
+                  percent2:this.gradePercent2,
+                  percent3:this.gradePercent3
+                }
+              }).then(res=>{
+                console.log(res.data);
+                this.axios.get('/api/teacher/chengji/selectGrades',{
+                  params:{
+                    id:this.course
+                  }
+                }).then(res=>{
+                  console.log(res.data);
+                  this.gradePercent1=res.data.data[0].percent1;
+                  this.gradePercent2=res.data.data[0].percent2;
+                  this.gradePercent3=res.data.data[0].percent3;
+                  this.studentsList=res.data.data;
+                  // stusList=res.data.studentsList;
+                  // this.studentsList=stusList;
+                  // console.log(stusList);
+                })
+              })
             }
             else{
               alert("请确保百分比只和为100！");
             }
           },
           changeStudentGrade(index){
+            alert(this.studentsList[index].score3);
+
+            this.axios('/api/teacher/chengji/updateGrades',{
+              params:{
+                id:parseInt(this.course),
+                ctype:this.studentsList[index].ctype,
+                sid:this.studentsList[index].sid,
+                score1:this.studentsList[index].score1,
+                score2:this.studentsList[index].score2,
+                score3:this.studentsList[index].score3
+              }
+            }).then(res=>{
+              console.log(res.data);
+              this.studentsList[index].score=res.data.data.score;
+              this.studentsList[index].scorelevel=res.data.data.scorelevel;
+
+            })
             // alert(index);
-            console.log(this.studentsList[index].grade1,this.studentsList[index].grade2,this.studentsList[index].grade3);
-            this.studentsList[index].gradesum=(this.studentsList[index].grade1*this.gradePercent1*0.01+this.studentsList[index].grade2*this.gradePercent2*0.01+this.studentsList[index].grade3*this.gradePercent3*0.01).toFixed(2);
+            // console.log(this.studentsList[index].grade1,this.studentsList[index].grade2,this.studentsList[index].grade3);
+            // this.studentsList[index].gradesum=(this.studentsList[index].grade1*this.gradePercent1*0.01+this.studentsList[index].grade2*this.gradePercent2*0.01+this.studentsList[index].grade3*this.gradePercent3*0.01).toFixed(2);
           }
     },
   }

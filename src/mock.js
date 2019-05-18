@@ -14,6 +14,8 @@ const produceStudentGrade = function() {
             jidian:Random.float(0,4.33,1,2),
             xueyuan:Random.city(),
             teacher:Random.cname(),
+            zuofeiflag:Random.integer(0,1),
+            gradestate:Random.integer(0,5)
               // Random.date()指示生成的日期字符串的格式,默认为yyyy-MM-dd；Random.time() 返回一个随机的时间字符串
         }
         gradeList.push(newStudentGrade);
