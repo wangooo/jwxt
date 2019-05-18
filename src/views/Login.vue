@@ -69,7 +69,6 @@
         console.log(this.$store.state.loginFlag);
       },
       submitForm(formName) {
-        // alert(this.radio);
         this.$refs[formName].validate((valid) => {
           if (valid&&this.ruleForm2.name=='123'&&this.ruleForm2.pass=='123') {
 
@@ -98,10 +97,8 @@
             }
 
             this.$store.state.loginFlag=true;
-            console.log(this.$store.state.loginFlag);
+            // console.log(this.$store.state.loginFlag);
 
-            // localStorage.setItem('token',res.data.token)
-            // 将登录名使用vuex传递到Home页面
             console.log('存入user_name : '+storage.getItem("user_name"))
             this.$store.commit('handleUserName',this.ruleForm2.name);
 
