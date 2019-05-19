@@ -27,7 +27,7 @@ const state = {
   userJob: '1',
   loginFlag:false,
   xuenianNow:'2019-2020',
-  xueqiNow:'2',
+  xueqiNow:2,
   studentKb:[],
   teacherKb:[],
 }

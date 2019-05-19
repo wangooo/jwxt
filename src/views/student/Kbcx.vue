@@ -87,21 +87,14 @@ export default {
     },
     mounted() {
       this.loginFlagCsh()
-      this.kebiaoCsh()
     },
     methods:{
       loginFlagCsh(){
-        this.$store.state.loginFlag=true;
-        this.$store.state.userJob='1';
-      },
-      kebiaoCsh(){
         var storage=window.localStorage;
         this.xuenian=storage.getItem('xuenianNow');
         this.xueqi=storage.getItem('xueqiNow');
-        // axios.get('/student/kbcxByNow').then(res=>{
-        //   // console.log(res.data.studentKb);
-        //   this.$store.commit('getStudentKb',res.data.studentKb);
-        // })
+        this.$store.state.loginFlag=true;
+        this.$store.state.userJob='1';
       },
 
       searchKbById(){

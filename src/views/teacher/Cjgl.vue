@@ -2,7 +2,7 @@
     <div>
       <div class="container">
         <p class="viewsTitle">|    成绩管理    |</p>
-        <div>
+        <div class="botmargin">
           <div class="select-box">
             <span>请选择学年：</span>
             <template>
@@ -27,26 +27,17 @@
             <el-button @click="findCoursesByXuenianXueqi" size="mini" style="margin-left:20px;margin-bottom:20px;">确定</el-button>
             <br>
 
-            <div v-show="flag2">
+            <div v-show="flag2" class="bottom">
             <span >请选择所教课程：</span>
               <el-select size="mini" v-model="course" placeholder="请选择">
                 <el-option
                   v-for="item in courseList"
                   :key="item.id"
-                  :label="item.cmajor+item.cname"
+                  :label="item.cname+'——'+item.cmajor"
                   :value="item.id">
                 </el-option>
               </el-select>
               <el-button size="mini" @click="gradeSet">确定</el-button>
-              <!-- <span>请选择成绩个数：</span>
-              <el-select size="mini" v-model="value2" placeholder="请选择">
-                <el-option
-                  v-for="item in options2"
-                  :key="item.classId"
-                  :label="item.classNamee"
-                  :value="item.classId">
-                </el-option>
-              </el-select> -->
             </div>
           </div>
           <div class="input-box" v-show="percentFlag" style="margin:20px 0 30px 0;">
@@ -169,7 +160,7 @@
             this.xuenian=storage.getItem('xuenianNow');
             this.xueqi=storage.getItem('xueqiNow');
             this.$store.state.loginFlag=true;
-            this.$store.state.userJob='2';
+            this.$store.state.userJob='老师';
           },
           gradeBiliCheck(){
             var len=this.grade.length;
@@ -195,18 +186,26 @@
             // alert(this.xuenian);
             // alert(this.xueqi);
 
-            this.flag2=true;
+
             var list=[];
             this.axios.get('/api/teacher/chengji/selectCourses',{
               params:{
-                tid:'2',
+                tid:'3',
                 year:this.xuenian,
                 semester:parseInt(this.xueqi)
               }
             }).then(res=>{
+              if(res.data.code==0){
+                console.log(res.data);
+                this.flag2=true;
+                this.courseList=res.data.data;
+              }
+              else{
+                this.flag2=false;
+                alert(res.data.message);
+              }
               // list=res.data.findCourses;
-              console.log(res.data);
-              this.courseList=res.data.data;
+
               // this.courseList=list;
             })
           },
@@ -228,7 +227,7 @@
             else{
               this.disFlag=false;
             }
-            this.percentFlag=true;
+
             var stusList=[];
             // alert(this.courseType);
             this.axios.get('/api/teacher/chengji/selectGrades',{
@@ -236,15 +235,24 @@
                 id:this.course
               }
             }).then(res=>{
-              alert(res.data.data[0].ctype);
-              if(res.data.data[0].ctype=='通识教育课程'){
-                this.disFlag=true;
+              if(res.data.code==0){
+                this.percentFlag=true;
+                console.log(res.data);
+                if(res.data.data[0].ctype=='通识教育课程'){
+                  this.disFlag=true;
+                }
+                console.log(res.data);
+                this.gradePercent1=res.data.data[0].percent1;
+                this.gradePercent2=res.data.data[0].percent2;
+                this.gradePercent3=res.data.data[0].percent3;
+                this.studentsList=res.data.data;
               }
-              console.log(res.data);
-              this.gradePercent1=res.data.data[0].percent1;
-              this.gradePercent2=res.data.data[0].percent2;
-              this.gradePercent3=res.data.data[0].percent3;
-              this.studentsList=res.data.data;
+              else{
+                this.studentsList=[];
+                this.percentFlag=false;
+                alert(res.data.message);
+              }
+
               // stusList=res.data.studentsList;
               // this.studentsList=stusList;
               // console.log(stusList);
@@ -276,21 +284,32 @@
                   percent3:this.gradePercent3
                 }
               }).then(res=>{
-                console.log(res.data);
-                this.axios.get('/api/teacher/chengji/selectGrades',{
-                  params:{
-                    id:this.course
-                  }
-                }).then(res=>{
+                if(res.data.code==0){
                   console.log(res.data);
-                  this.gradePercent1=res.data.data[0].percent1;
-                  this.gradePercent2=res.data.data[0].percent2;
-                  this.gradePercent3=res.data.data[0].percent3;
-                  this.studentsList=res.data.data;
-                  // stusList=res.data.studentsList;
-                  // this.studentsList=stusList;
-                  // console.log(stusList);
-                })
+                  this.axios.get('/api/teacher/chengji/selectGrades',{
+                    params:{
+                      id:this.course
+                    }
+                  }).then(res=>{
+                    if(res.data.code==0){
+                      console.log(res.data);
+                      this.gradePercent1=res.data.data[0].percent1;
+                      this.gradePercent2=res.data.data[0].percent2;
+                      this.gradePercent3=res.data.data[0].percent3;
+                      this.studentsList=res.data.data;
+                      // stusList=res.data.studentsList;
+                      // this.studentsList=stusList;
+                      // console.log(stusList);
+                    }
+                    else{
+                      alert(res.data.message);
+                    }
+                  })
+                }
+                else{
+                  alert(res.data.message);
+                }
+
               })
             }
             else{

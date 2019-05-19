@@ -12,6 +12,7 @@ import Cjgl from '@/views/teacher/Cjgl'
 import Pk from '@/views/teacher/Pk'
 import BsTeacher from '@/views/teacher/BsTeacher'
 import Admin from '@/views/admin/admin'
+import Xsxx from '@/views/admin/Xsxx'
 
 Vue.use(Router)
 
@@ -88,6 +89,11 @@ export default new Router({
       path: '/admin',
       name: 'Admin',
       component: Admin
+    },
+    {
+      path: '/xsxx',
+      name: 'Xsxx',
+      component: Xsxx
     },
 
 

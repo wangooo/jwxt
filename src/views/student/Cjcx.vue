@@ -7,9 +7,9 @@
               <div class="left">
                 <span class="small-font">学年</span>
                 <template>
-                  <el-select size="small" v-model="value1" placeholder="请选择">
+                  <el-select size="small" v-model="xuenian" placeholder="请选择">
                     <el-option
-                      v-for="item in options1"
+                      v-for="item in xuenians"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value">
@@ -18,16 +18,16 @@
                 </template>
                 <span class="small-font ml">学期</span>
                 <template>
-                  <el-select size="small" v-model="value2" placeholder="请选择">
+                  <el-select size="small" v-model="xueqi" placeholder="请选择">
                     <el-option
-                      v-for="item in options2"
+                      v-for="item in xueqis"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value">
                     </el-option>
                   </el-select>
                 </template>
-                <el-button size="small" icon="el-icon-search" class="ml" @click="searchGrade(sid,value1,value2)">搜索</el-button>
+                <el-button size="small" icon="el-icon-search" class="ml" @click="searchGrade()">搜索</el-button>
                 <el-button size="small" icon="el-icon-upload2" @click="addd">导出</el-button>
                 <el-tag type="success" style="float:right">总GPA为：{{sumGpa}}</el-tag>
               </div>
@@ -88,16 +88,6 @@
                   <el-pagination align='center' @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[1,5,10,20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="myList.length">
                   </el-pagination>
               </div>
-              <!-- <div class="paginationClass">
-                <el-pagination
-                @size-change="handleSizeChange1"
-                @current-change="handleCurrentChange1" :current-page="currentPage1"
-                :page-sizes="[10, 20, 50, 100]"
-                :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
-                :total="total1">
-                </el-pagination>
-              
-              </div> -->
             </div>
 
         </div>
@@ -108,10 +98,14 @@
               <el-button @click="closeCheck" size="mini" icon="el-icon-circle-close" class="closeBtn">关闭</el-button>
             </div>
             <div class="grade-item">
-              <div>平时成绩：{{score1}}{{percent1}}</div>
-              <div>期中/实验成绩：{{score2}}{{percent2}}</div>
-              <div>期末成绩：{{score3}}{{percent3}}</div>
-              <div>总成绩{{score}}</div>
+              <ul class="list-group">
+                <li class="list-group-item" v-show="disFlag">平时成绩：{{score1}} 成绩百分比：{{percent1}}</li>
+                <li class="list-group-item" v-show="disFlag">期中/实验成绩：{{score2}} 成绩百分比：{{percent2}}</li>
+                <li class="list-group-item" v-show="disFlag">期末成绩：{{score3}} 成绩百分比：{{percent3}}</li>
+                <li class="list-group-item" v-show="disFlag">总成绩：{{score}}</li>
+                <li class="list-group-item" v-show="!disFlag">总成绩：<span v-if="score>0">合格</span><span v-else>不合格</span></li>
+              </ul>
+
             </div>
           </el-card>
     </div>
@@ -133,25 +127,25 @@ export default {
             pageSize: 5, // 每页的数据条数
         checkAll:'',
 
-        options1: [{
-          value: '2016',
+        xuenians: [{
+          value: '2016-2017',
           label: '2016-2017'
         }, {
-          value: '2017',
+          value: '2017-2018',
           label: '2017-2018'
         }, {
-          value: '2018',
+          value: '2018-2019',
           label: '2018-2019'
         }, {
-          value: '2019',
+          value: '2019-2020',
           label: '2019-2020'
         },
         {
           value: 'all',
           label: '全部'
         }],
-        value1: '',
-        options2: [{
+        xuenian: '',
+        xueqis: [{
           value: 1,
           label: '学期一'
         }, {
@@ -165,7 +159,7 @@ export default {
           value: 0,
           label: '全部'
         }],
-        value2: 0,
+        xueqi:0,
         sid:'',
         score1:'',
         score2:'',
@@ -173,7 +167,9 @@ export default {
         percent1:'',
         percent2:'',
         percent3:'',
-        score:''
+        score:'',
+        ctype:'',
+        disFlag:true
       }
     },
   mounted() {
@@ -190,14 +186,31 @@ export default {
             this.currentPage = val;
         },
       loginFlagCsh(){
+        var storage=window.localStorage;
+        this.xuenian=storage.getItem('xuenianNow');
+        this.xueqi=storage.getItem('xueqiNow');
         this.$store.state.loginFlag=true;
-        this.$store.state.userJob='1';
+        this.$store.state.userJob='学生';
+        console.log(storage.getItem("user_name"));
       },
       handleClick(row) {
         this.checkAll=row;
-        console.log("成绩为："+row.grade);
+        console.log("成绩为："+row.score3);
         this.checkGradeFlag=true;
         this.zhezhaoFlag=true;
+        this.score1=row.score1;
+        this.score2=row.score2;
+        this.score3=row.score3;
+        this.percent1=row.percent1;
+        this.percent2=row.percent2;
+        this.percent3=row.percent3;
+        this.score=row.score;
+        if(row.ctype=='通识教育课程'){
+          this.disFlag=false;
+        }
+        else{
+          this.disFlag=true;
+        }
       },
       addd(){
         var neww={
@@ -217,25 +230,26 @@ export default {
         this.checkGradeFlag=false;
         this.zhezhaoFlag=false;
       },
-      searchGrade(sid,value1,value2){
+      searchGrade(){
         // var id=this.state.id;
         var storage=window.localStorage;
         var sid=storage.getItem("user_name");
-        value1=this.value1;
-        value2=parseInt(this.value2);
+        // alert(value1);
+        // alert(value2);
         var mySid='2016014495';
         var sum=0;
-        axios.get('/api/student/chengji/selectGrades',{
+        this.axios.get('/api/student/chengji/selectGrades',{
           params:{
             sid:mySid,
-            year:value1,
-            semester:parseInt(value2)
+            year:this.xuenian,
+            semester:parseInt(this.xueqi)
           }
         }).then(res=>{
           console.log(res.data);
           // console.log(res.data.data[0]);
           this.myList=res.data.data;
           this.score1=res.data.data.score1;
+          // this.ctype=res.data.data.ctype;
           // this.
           // this.myList=res.data.LIST;
           // console.log(this.myList);
@@ -289,7 +303,7 @@ export default {
     }
     .checkGrade{
       width: 450px;
-      height: 250px;
+      height: 280px;
       background:white;
       position:absolute;
       top:0;

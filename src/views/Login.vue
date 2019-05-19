@@ -12,9 +12,9 @@
         <!--<el-radio v-model="studentJob" label="1">学生</el-radio>-->
         <!--<el-radio v-model="$store.state.userJob" label="2">老师</el-radio>-->
         <!--<el-radio v-model="$store.state.userJob" label="3">管理员</el-radio>-->
-        <el-radio label="1" v-model="radio">学生</el-radio>
-        <el-radio label="2" v-model="radio">老师</el-radio>
-        <el-radio label="3" v-model="radio">管理员</el-radio>
+        <el-radio label="学生" v-model="radio">学生</el-radio>
+        <el-radio label="老师" v-model="radio">老师</el-radio>
+        <el-radio label="管理员" v-model="radio">管理员</el-radio>
       </div>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm2')">提交</el-button>
@@ -45,7 +45,7 @@
       };
       return {
         // studentJob:'1',
-        radio:'1',
+        radio:'学生',
       //   ymUserJob:  his.$store.state.userJob,
         ruleForm2: {
           pass: '',
@@ -69,43 +69,52 @@
         console.log(this.$store.state.loginFlag);
       },
       submitForm(formName) {
+        alert(this.ruleForm2.pass);
         this.$refs[formName].validate((valid) => {
-          if (valid&&this.ruleForm2.name=='123'&&this.ruleForm2.pass=='123') {
-
-            localStorage.setItem('xuenianNow', this.$store.state.xuenianNow);
-            localStorage.setItem('xueqiNow', this.$store.state.xueqiNow);
-            // alert(this.$store.state.xuenianNow);
-
-            this.$store.commit('handleUserJob',this.radio);
-            var storage=window.localStorage;
-            this.$store.commit('handleUserJob',this.radio);
-            console.log('此时vuex中user_jpb为 : '+this.$store.state.userJob);
-            console.log('存入user_job : '+storage.getItem("user_job"))
-            if(this.radio=='1'){
-              alert('学生身份进入');
-               this.$router.push({path:'/index'})
+          this.axios.get('/api/common/houtai/login',{
+            params:{
+              id:this.ruleForm2.name,
+              password:this.ruleForm2.pass.toString(),
+              nature:this.radio
             }
-            if(this.radio=='2'){
-              alert("老师身份进入")
+          }).then(res=>{
+              console.log(res.data);
+            if (valid&&res.data=='0') {
+              // localStorage.setItem('xuenianNow', this.$store.state.xuenianNow);
+              localStorage.setItem('user_name', this.ruleForm2.name);
+              localStorage.setItem('xuenianNow', this.$store.state.xuenianNow);
+              localStorage.setItem('xueqiNow', this.$store.state.xueqiNow);
+              // alert(this.$store.state.xuenianNow);
 
-              this.$router.push({path:'/teacher'})
+              var storage=window.localStorage;
+              this.$store.commit('handleUserJob',this.radio);
+              console.log('此时vuex中user_job为 : '+this.$store.state.userJob);
+              console.log('存入user_job : '+storage.getItem("user_job"))
+              if(this.radio=='学生'){
+                alert('学生身份进入');
+                this.$router.push({path:'/index'})
+              }
+              if(this.radio=='老师'){
+                alert("老师身份进入")
+                this.$router.push({path:'/teacher'})
+              }
+              // if(this.$store.state.userJob=='3'){
+              if(this.radio=='管理员'){
+                alert("管理员身份进入")
+                this.$router.push({path:'/admin'})
+              }
+
+              this.$store.state.loginFlag=true;
+              // console.log(this.$store.state.loginFlag);
+
+              console.log('存入user_name : '+storage.getItem("user_name"))
+              this.$store.commit('handleUserName',this.ruleForm2.name);
+
+            } else {
+              alert('密码错误');
+              // return false;
             }
-            // if(this.$store.state.userJob=='3'){
-            if(this.radio=='3'){
-              alert("管理员身份进入")
-              this.$router.push({path:'/admin'})
-            }
-
-            this.$store.state.loginFlag=true;
-            // console.log(this.$store.state.loginFlag);
-
-            console.log('存入user_name : '+storage.getItem("user_name"))
-            this.$store.commit('handleUserName',this.ruleForm2.name);
-
-          } else {
-            alert('密码错误');
-            // return false;
-          }
+          })
         });
       },
       resetForm(formName) {

@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <!-- <img src="./assets/logo.png"> -->
-    <nav-header v-if="$store.state.userJob=='1'&& $store.state.loginFlag"></nav-header>
-    <nav-header-teacher v-if="$store.state.userJob=='2'&& $store.state.loginFlag"></nav-header-teacher>
-    <nav-header-admin v-if="$store.state.userJob=='3'&& $store.state.loginFlag"></nav-header-admin>
+    <nav-header v-if="$store.state.userJob=='学生'&& $store.state.loginFlag"></nav-header>
+    <nav-header-teacher v-if="$store.state.userJob=='老师'&& $store.state.loginFlag"></nav-header-teacher>
+    <nav-header-admin v-if="$store.state.userJob=='管理员'&& $store.state.loginFlag"></nav-header-admin>
 
     <!-- <nav-header v-show="(user_job=='1')&&$store.state.loginFlag"></nav-header>
     <nav-header-teacher v-show="(user_job=='2')&&$store.state.loginFlag"></nav-header-teacher>

@@ -22,7 +22,7 @@
         methods:{
           loginFlagCsh(){
             this.$store.state.loginFlag=true;
-            this.$store.state.userJob='2';
+            this.$store.state.userJob='老师';
           },
           trya(){
             var tid='10';
