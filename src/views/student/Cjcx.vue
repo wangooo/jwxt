@@ -99,10 +99,10 @@
             </div>
             <div class="grade-item">
               <ul class="list-group">
-                <li class="list-group-item" v-show="disFlag">平时成绩：{{score1}} 成绩百分比：{{percent1}}</li>
-                <li class="list-group-item" v-show="disFlag">期中/实验成绩：{{score2}} 成绩百分比：{{percent2}}</li>
-                <li class="list-group-item" v-show="disFlag">期末成绩：{{score3}} 成绩百分比：{{percent3}}</li>
-                <li class="list-group-item" v-show="disFlag">总成绩：{{score}}</li>
+                <li class="list-group-item" v-show="disFlag"><span>平时成绩：{{score1}} </span><span class="right-text">成绩百分比：{{percent1}}</span></li>
+                <li class="list-group-item" v-show="disFlag"><span>期中/实验成绩：{{score2}} </span><span class="right-text">成绩百分比：{{percent2}}</span></li>
+                <li class="list-group-item" v-show="disFlag"><span>期末成绩：{{score3}} </span><span class="right-text">成绩百分比：{{percent3}}</span></li>
+                <li class="list-group-item" v-bind:class="{'list-group-item-danger':score<60,'list-group-item-success':score>=60}" v-show="disFlag">总成绩：{{score}}</li>
                 <li class="list-group-item" v-show="!disFlag">总成绩：<span v-if="score>0">合格</span><span v-else>不合格</span></li>
               </ul>
 
@@ -187,6 +187,11 @@ export default {
         },
       loginFlagCsh(){
         var storage=window.localStorage;
+        var sudo=storage.getItem('login_if');
+        if(!sudo){
+          alert('请登陆！');
+          this.$router.push({path:'/'});
+        }
         this.xuenian=storage.getItem('xuenianNow');
         this.xueqi=storage.getItem('xueqiNow');
         this.$store.state.loginFlag=true;
@@ -231,36 +236,27 @@ export default {
         this.zhezhaoFlag=false;
       },
       searchGrade(){
-        // var id=this.state.id;
         var storage=window.localStorage;
         var sid=storage.getItem("user_name");
-        // alert(value1);
-        // alert(value2);
         var mySid='2016014495';
         var sum=0;
         this.axios.get('/api/student/chengji/selectGrades',{
-          params:{
-            sid:mySid,
-            year:this.xuenian,
-            semester:parseInt(this.xueqi)
-          }
+          // params:{
+          //   sid:mySid,
+          //   year:this.xuenian,
+          //   semester:parseInt(this.xueqi)
+          // }
         }).then(res=>{
           console.log(res.data);
-          // console.log(res.data.data[0]);
-          this.myList=res.data.data;
-          this.score1=res.data.data.score1;
-          // this.ctype=res.data.data.ctype;
-          // this.
-          // this.myList=res.data.LIST;
-          // console.log(this.myList);
-          // this.myList.forEach((val,index)=>{
-          //   sum+=val.jidian;
-          //   console.log(val.jidian)
-          // })
-          // this.sumGpa=(sum/(this.myList.length)).toFixed(2);
+          // this.myList=res.data.data;
+          // this.score1=res.data.data.score1;
+          this.myList=res.data.gradeList;//mock
+          this.myList.forEach((val,index)=>{
+            sum+=val.credit;
+            console.log(val.jidian)
+          })
+          this.sumGpa=(sum/(this.myList.length)).toFixed(2);
         })
-       
-        
         this.sumGpa=sum;
         // alert(this.sumGpa);
         
@@ -280,7 +276,7 @@ export default {
     .main{
         margin:0 auto;
         // background:yellow;
-        width:80%;
+        width:65%;
         height: 100%;
         z-index:0;
 
@@ -351,6 +347,10 @@ export default {
         margin:16px 0;
       }
      
+    }
+    .right-text{
+      float:right;
+      margin-right:70px;
     }
 
 </style>

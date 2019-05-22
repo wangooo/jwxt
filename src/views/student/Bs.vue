@@ -22,9 +22,14 @@
     },
     methods:{
       loginFlagCsh(){
+        var sudo=localStorage.getItem('login_if');
+        if(!sudo){
+          alert('请登陆！');
+          this.$router.push({path:'/'});
+        }
         // 检查this.$store.state中的loginflag的状态，来判断是否登陆loginFlag和当前登陆的身份userJob是什么，如果是学生界面就设置为'0'，老师界面设置为'1'，管理员设置为'2'（这是vuex的内容）
         this.$store.state.loginFlag=true;
-        this.$store.state.userJob='1';
+        this.$store.state.userJob='学生';
       },
     }
     }

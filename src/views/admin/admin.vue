@@ -1,85 +1,25 @@
 <template>
-  <div>
-      <p class="viewsTitle">| 子系统管理 |</p >
-    <div class="maintable">
-      <el-table
-        :data="tableData"
-        style="width: 100%" class="table">
-        <el-table-column
-          prop="name"
-          label="名称"
-          width="240">
-        </el-table-column>
-        <el-table-column
-          prop="status"
-          label="状态"
-          width="240">
-        </el-table-column>
-        <el-table-column
-          prop="control"
-          label="管理"
-          width="240">
-        </el-table-column>
-      </el-table>
+    <div class="admin">
+      <p>管理员主页</p>
+      <h1>有个锤子主页</h1>
     </div>
-<div class="AdminBu">
-      <el-switch
-        v-model="value1"
-        active-color="#13ce66"
-        inactive-color="#ff4949"
-        active-value="true"
-        inactive-value="false"
-        active-text="启用"
-        inactive-text="禁用">
-      </el-switch><br>
-      <el-switch
-        v-model="value2"
-        active-color="#13ce66"
-        inactive-color="#ff4949"
-        active-value="true"
-        inactive-value="false"
-        active-text="启用"
-        inactive-text="禁用">
-      </el-switch><br>
-      <el-switch
-        v-model="value3"
-        active-color="#13ce66"
-        inactive-color="#ff4949"
-        active-value="true"
-        inactive-value="false"
-active-text="启用"
-        inactive-text="禁用">
-      </el-switch><br>
-      <el-switch
-        v-model="value4"
-        active-color="#13ce66"
-        inactive-color="#ff4949"
-        active-value="true"
-        inactive-value="false"
-        active-text="启用"
-        inactive-text="禁用">
-      </el-switch><br>
-      <el-switch
-        v-model="value5"
-        active-color="#13ce66"
-        inactive-color="#ff4949"
-        active-value="true"
-        inactive-value="false"
-        active-text="启用"
-        inactive-text="禁用">
-      </el-switch>
-    </div>
-  </div>
-  </template>
+</template>
+
 <script>
-   import '../../../assets/css/common.scss';
-  export default{
-    name:'Bs',
-    data() {
-      return{
-tableData:[
-          {
-            name:'成绩查询系统',
-            status:'启用'
-          },
-      {
+    export default {
+        name: "admin",
+        mounted() {
+            this.loginFlagCsh();
+        },
+        methods:{
+            loginFlagCsh(){
+                this.$store.state.loginFlag=true;
+                this.$store.state.userJob='管理员';
+            },
+        }
+    }
+</script>
+
+<style scoped>
+
+</style>

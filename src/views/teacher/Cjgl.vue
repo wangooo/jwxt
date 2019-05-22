@@ -157,6 +157,11 @@
         methods:{
           loginFlagCsh(){
             var storage=window.localStorage;
+            var sudo=storage.getItem('login_if');
+            if(!sudo){
+              alert('请登陆！');
+              this.$router.push({path:'/'});
+            }
             this.xuenian=storage.getItem('xuenianNow');
             this.xueqi=storage.getItem('xueqiNow');
             this.$store.state.loginFlag=true;

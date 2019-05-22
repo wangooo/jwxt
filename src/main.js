@@ -11,7 +11,7 @@ import 'bootstrap3/dist/js/bootstrap.min.js'
 import 'bootstrap3/dist/css/bootstrap.min.css'
 // import axios from 'axios'
 var axios = require('axios')
-axios.defaults.baseURL = 'http://192.168.43.217:8080/'
+axios.defaults.baseURL = 'http://192.168.43.254:8443/'
 // 将API方法绑定到全局
 Vue.prototype.$axios = axios
 Vue.config.productionTip = false
@@ -20,7 +20,7 @@ Vue.prototype.axios = axios;
 
 Vue.use(ElementUI);
 
-// require('./mock.js')
+require('./mock.js')
 
 Vue.config.productionTip = false
 

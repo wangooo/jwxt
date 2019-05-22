@@ -13,6 +13,21 @@ import Pk from '@/views/teacher/Pk'
 import BsTeacher from '@/views/teacher/BsTeacher'
 import Admin from '@/views/admin/admin'
 import Xsxx from '@/views/admin/Xsxx'
+import Sdpk from '@/views/admin/PKXT/Sdpk'
+import Zdpk from '@/views/admin/PKXT/Zdpk'
+import Kbcxadm from '@/views/admin/PKXT/Kbcxadm'
+import Kctj from '@/views/admin/KCGL/Kctj'
+import Kccx from '@/views/admin/KCGL/Kccx'
+import Zhtj from '@/views/admin/Zhanghao/Zhtj'
+import Zhcx from '@/views/admin/Zhanghao/Zhcx'
+import Zxt  from '@/views/admin/Zxt'
+
+import Jsxx from '@/views/admin/XXXG/Jsxx'
+
+import Jjcx from '@/views/admin/record/Jjcx'
+import Jjtj from '@/views/admin/record/Jjtj'
+import Xjcx from '@/views/admin/record/Xjcx'
+import Xjtj from '@/views/admin/record/Xjtj'
 
 Vue.use(Router)
 
@@ -86,6 +101,11 @@ export default new Router({
       component: Pk
     },
     {
+      path: '/sdpk',
+      name: 'Sdpk',
+      component: Sdpk
+    },
+    {
       path: '/admin',
       name: 'Admin',
       component: Admin
@@ -95,6 +115,68 @@ export default new Router({
       name: 'Xsxx',
       component: Xsxx
     },
+    {
+      path: '/zhcx',
+      name: 'Zhcx',
+      component: Zhcx
+    },
+    {
+      path: '/zhtj',
+      name: 'Zhtj',
+      component: Zhtj
+    },
+    {
+      path: '/zxt',
+      name: 'Zxt',
+      component: Zxt
+    },
+    {
+      path: '/xsxx',
+      name: 'Xsxx',
+      component: Xsxx
+    },
+    {
+      path: '/jsxx',
+      name: 'Jsxx',
+      component: Jsxx
+    },
+    {
+      path: '/jjtj',
+      name: 'Jjtj',
+      component: Jjtj
+    },
+    {
+      path: '/jjcx',
+      name: 'Jjcx',
+      component: Jjcx
+    },
+    {
+      path: '/xjtj',
+      name: 'Xjtj',
+      component: Xjtj
+    },
+    {
+      path: '/xjcx',
+      name: 'Xjcx',
+      component: Xjcx
+    },
+    {
+      path: '/kctj',
+      name: 'Kctj',
+      component: Kctj
+    },
+    {
+      path: '/zdpk',
+      name: 'Zdpk',
+      component: Zdpk
+    },
+    {
+      path: '/kbcxadm',
+      name: 'Kbcxadm',
+      component: Kbcxadm
+    }
+
+
 
 
   ]

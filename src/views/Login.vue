@@ -69,21 +69,21 @@
         console.log(this.$store.state.loginFlag);
       },
       submitForm(formName) {
-        alert(this.ruleForm2.pass);
+        // alert(this.ruleForm2.pass);
+        let param = new URLSearchParams();
+        param.append("id", this.ruleForm2.name);
+        param.append("password", this.ruleForm2.pass.toString());
+        param.append("nature", this.radio);
         this.$refs[formName].validate((valid) => {
-          this.axios.get('/api/common/houtai/login',{
-            params:{
-              id:this.ruleForm2.name,
-              password:this.ruleForm2.pass.toString(),
-              nature:this.radio
-            }
-          }).then(res=>{
-              console.log(res.data);
+          this.axios.post('/api/common/houtai/login',param).then(res=>{
+              // console.log(res.data);
             if (valid&&res.data=='0') {
-              // localStorage.setItem('xuenianNow', this.$store.state.xuenianNow);
+              //此处若与后端交互改为res.data=='0';
+              localStorage.setItem('login_if',1);
               localStorage.setItem('user_name', this.ruleForm2.name);
               localStorage.setItem('xuenianNow', this.$store.state.xuenianNow);
               localStorage.setItem('xueqiNow', this.$store.state.xueqiNow);
+              localStorage.setItem('xingqiNow', "第二周");
               // alert(this.$store.state.xuenianNow);
 
               var storage=window.localStorage;

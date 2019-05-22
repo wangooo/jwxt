@@ -10,6 +10,7 @@
         <el-menu-item index="Cjgl" @click="goCjglTeacher">成绩管理</el-menu-item>
         <el-menu-item index="Pk" @click="goPk">排课</el-menu-item>
         <el-menu-item index="BsTeacher" @click="goBs">毕业设计</el-menu-item>
+        <el-menu-item index="Kbcxadm" @click="goKbcxadm">课表查询</el-menu-item>
         <el-menu-item index="6">个人中心</el-menu-item>
         <!--<el-menu-item index="7"><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item>-->
         <el-button class="logout" size="small" @click="logout()">登出</el-button>
@@ -46,6 +47,9 @@
       },
       goBs(){
         this.$router.push({path:'/bsteacher'});
+      },
+      goKbcxadm(){
+        this.$router.push({path:'/kbcxadm'});
       },
       logout(){
         var storage=window.localStorage;

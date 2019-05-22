@@ -1,173 +1,594 @@
 <template>
-   <div class="tTable container body-content">
-        <div class="form-group">
-            <div class="form-group">
-                <div class="page-header">
-                    表格
-                </div>
-                <table class="table table-bordered table-responsive table-striped">
-                    <thead>
-                    <tr>
-                    <th>时间</th>
-                    <th>点击数</th>
-                    <th>点击数</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr v-for="item in arrayData">
-                        <td>{{item.timestamp}}</td>
-                        <td>{{item.count}}</td>
-                        <td>{{item.count}}</td>
-                    </tr>
-                    </tbody>
-                </table>
-                <div class="pager" id="pager">
-                    <span class="form-inline">
-                        <select class="form-control" v-model="pagesize" v-on:change="showPage(pageCurrent,$event,true)" number>
-                            <option value="10">10</option>
-                            <option value="20">20</option>
-                            <option value="30">30</option>
-                            <option value="40">40</option>
-                        </select>
-                    </span>
-                    <span v-for="item in pageCount+1">
-                        <span v-if="item==1" class="btn btn-default" v-on:click="showPage(1,$event)" :class="{'disabled':fDisabled}">
-                            首页
-                        </span>
-                        <span v-if="item==1" class="btn btn-default" v-on:click="showPage(pageCurrent-1,$event)" :class="{'disabled':fDisabled}">
-                            上一页
-                        </span>
-                        <span v-if="item==1" class="btn btn-default" v-on:click="showPage(item,$event)">
-                            {{item}}
-                        </span>
-                        <span v-if="item==1&&item<showPagesStart-1" class="btn btn-default disabled">
-                            ...
-                        </span>
-                        <span v-if="item>1&&item<=pageCount-1&&item>=showPagesStart&&item<=showPageEnd&&item<=pageCount" class="btn btn-default" v-on:click="showPage(item,$event)">
-                            {{item}}
-                        </span>
-                        <span v-if="item==pageCount&&item>showPageEnd+1" class="btn btn-default disabled">
-                            ...
-                        </span>
-                        <span v-if="item==pageCount" class="btn btn-default" v-on:click="showPage(item,$event)"  >
-                            {{item}}
-                        </span>
-                        <span v-if="item==pageCount" class="btn btn-default" v-on:click="showPage(pageCurrent+1,$event)" :class="{'disabled':lDisabled}">
-                            下一页
-                        </span>
-                        <span v-if="item==pageCount" class="btn btn-default" v-on:click="showPage(pageCount,$event)" :class="{'disabled':lDisabled}">
-                            尾页
-                        </span>
-                    </span>
-                    <span>{{pageCurrent}}/{{pageCount}}</span>
-                </div>
+  <div class="main">
+    <!--<nav-header></nav-header>-->
+
+    <el-container>
+      <el-aside width="400px">
+          <div class="panel panel-default mypanel">
+            <div class="panel-heading">
+              <h3 class="panel-title">学号</h3>
             </div>
+            <div class="panel-body" style="line-height:1.1">
+              2016014336
+            </div>
+          </div>
+        <div class="panel panel-default mypanel">
+          <div class="panel-heading">
+            <h3 class="panel-title">姓名</h3>
+          </div>
+          <div class="panel-body" style="line-height:1.1">
+            王诗媛
+          </div>
         </div>
-    </div>
- </template>
- <script >
- export default {
-   
+        <div class="panel panel-default mypanel">
+          <div class="panel-heading">
+            <h3 class="panel-title">班级</h3>
+          </div>
+          <div class="panel-body" style="line-height:1.1">
+            计科1603
+          </div>
+        </div>
+        <div class="panel panel-default mypanel">
+          <div class="panel-heading">
+            <h3 class="panel-title">手机</h3>
+          </div>
+          <div class="panel-body" style="line-height:1.1">
+            8008208820
+          </div>
+        </div>
+        <div class="panel panel-default mypanel">
+          <div class="panel-heading">
+            <h3 class="panel-title">导员</h3>
+          </div>
+          <div class="panel-body" style="line-height:1.1">
+            是
+          </div>
+        </div>
+
+
+      </el-aside>
+      <el-container>
+        <el-header>欢迎您进入教务管理系统</el-header>
+        <el-main>
+          <div class="kb-box">
+            <table class="table table-bordered">
+              <!-- <caption>基本的表格布局</caption> -->
+              <thead>
+              <tr>
+                <th>周一</th>
+                <th>周二</th>
+                <th>周三</th>
+                <th>周四</th>
+                <th>周五</th>
+                <th>周六</th>
+                <th>周日</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr v-for="(bigItem,index0) in kbMsgRer" :key="index0">
+                <td v-for="(items,index2) in bigItem" :key="index2">
+                  <li>{{items.tcname}}</li>
+                  <li>{{items.ttname}}</li>
+                  <!--<li>教室：{{items.place}}</li>-->
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </el-main>
+        <el-footer>当前教学周：{{xingqinow}}</el-footer>
+      </el-container>
+    </el-container>
+
+  </div>
+
+
+</template>
+
+<script>
+  import axios from 'axios'
+  import navHeader from '@/components/NavHeader'
+  //import NavHeader from '../../components/NavHeader'
+  // import Footer from './../components/Footer'
+
+  export default {
+    name:'Index',
     data(){
-        return{
-                 //为第一页或者最后一页时，首页，尾页不能点击
-               fDisabled:false,
-               lDisabled:false,
-                  //总项目数
-                totalCount: 200,
-                //分页数
-                pageCount: 20,
-                //当前页面
-                pageCurrent: 1,
-                //分页大小
-                pagesize: 10,
-                //显示分页按钮数
-                showPages: 11,
-                //开始显示的分页按钮
-                showPagesStart: 1,
-                //结束显示的分页按钮
-                showPageEnd: 100,
-                //分页数据
-                arrayData: []
-        }
+      return{
+        xingqinow:'第一周',
+        list:[],
+        studentIdd:this.$route.params.studentId,
+        kbMsgRer:[],
+        kbMsg:[[{
+          name:'数据结构00',
+          teacher:'万静',
+          place:'B201'
+        },
+          {
+            name:'大雾01',
+            teacher:'张',
+            place:'B202'
+          },
+          {
+            name:'人工智能',
+            teacher:'刘',
+            place:'B203'
+          },
+          {
+
+          },
+          {
+            name:'数据结构',
+            teacher:'万静',
+            place:'B201'
+          },
+          {
+            name:'大雾',
+            teacher:'张',
+            place:'B202'
+          },
+          {
+            name:'人工智能',
+            teacher:'刘',
+            place:'B203'
+          },
+          {
+
+          },
+          {
+            name:'数据结构',
+            teacher:'万静',
+            place:'B201'
+          },
+          {
+            name:'大雾',
+            teacher:'张',
+            place:'B202'
+          },
+          {
+            name:'人工智能',
+            teacher:'刘',
+            place:'B203'
+          },
+          {
+
+          },
+          {}],
+          [{
+            name:'数据结构',
+            teacher:'万静',
+            place:'B201'
+          },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {}],
+          [{
+            name:'数据结构03',
+            teacher:'万静',
+            place:'B201'
+          },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {}],
+          [{
+            name:'数据结构04',
+            teacher:'万静',
+            place:'B201'
+          },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {}],
+          [{
+            name:'数据结构',
+            teacher:'万静',
+            place:'B201'
+          },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {}],
+          [{
+            name:'数据结构',
+            teacher:'万静',
+            place:'B201'
+          },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {}],
+          [{
+            name:'数据结构',
+            teacher:'万静',
+            place:'B201'
+          },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {
+              name:'数据结构',
+              teacher:'万静',
+              place:'B201'
+            },
+            {
+              name:'大雾',
+              teacher:'张',
+              place:'B202'
+            },
+            {
+              name:'人工智能',
+              teacher:'刘',
+              place:'B203'
+            },
+            {
+
+            },
+            {}]]
+
+    }
+    },
+    mounted() {
+      this.loginFlagCsh(),
+        this.trya()
     },
     methods:{
-        showPage(pageIndex, $event, forceRefresh){
- 
-            if (pageIndex > 0) {
-                if (pageIndex > this.pageCount) {
-                    pageIndex = this.pageCount;
-                }
-                //判断数据是否需要更新
-                var currentPageCount = Math.ceil(this.totalCount / this.pagesize);
-                if (currentPageCount != this.pageCount) {
-                    pageIndex = 1;
-                    this.pageCount = currentPageCount;
-                }
-                else if (this.pageCurrent == pageIndex && currentPageCount == this.pageCount && typeof (forceRefresh) == "undefined") {
-                    console.log("not refresh");
-                    return;
-                }
- 
-                //处理分页点中样式
-                var buttons = $("#pager").find("span");
-                for (var i = 0; i < buttons.length; i++) {
-                    if (buttons.eq(i).html() != pageIndex) {
-                        buttons.eq(i).removeClass("active");
-                    }
-                    else {
-                        buttons.eq(i).addClass("active");
-                    }
-                }
- 
-                //测试数据 随机生成的
-                var newPageInfo = [];
-                var time=new Date();
-                for (var i = 0; i < this.pagesize; i++) {
-                    newPageInfo[newPageInfo.length] = {
-                        timestamp: time,
-                        count: (i + (pageIndex - 1) * 20)
-                    };
-                }
-                this.pageCurrent = pageIndex;
-                this.arrayData = newPageInfo;
-                //如果当前页首页或者尾页，则上一页首页就不能点击，下一页尾页就不能点击
-                 if(this.pageCurrent===1){
-                        this.fDisabled=true;
-                    }else if(this.pageCurrent===this.pageCount){
-                        this.lDisabled=true;
-                    }else{
-                         this.fDisabled=false;
-                         this.lDisabled=false;
-                    }
-              
-                //计算分页按钮数据
-                if (this.pageCount > this.showPages) {
-                    if (pageIndex <= (this.showPages - 1) / 2) {
-                        this.showPagesStart = 1;
-                        this.showPageEnd = this.showPages - 1;
-                        console.log("showPage1")
-                    }
-                    else if (pageIndex >= this.pageCount - (this.showPages - 3) / 2) {
-                        this.showPagesStart = this.pageCount - this.showPages + 2;
-                        this.showPageEnd = this.pageCount;
-                        console.log("showPage2")
-                    }
-                    else {
-                        console.log("showPage3")
-                        this.showPagesStart = pageIndex - (this.showPages - 3) / 2;
-                        this.showPageEnd = pageIndex + (this.showPages - 3) / 2;
-                    }
-                }
-                console.log("showPagesStart:" + this.showPagesStart + ",showPageEnd:" + this.showPageEnd + ",pageIndex:" + pageIndex);
-            }
+      loginFlagCsh(){
+        var reversedArr = [];
+
+        for(var n = 0; n < this.kbMsg[0].length; n++) {
+
+          reversedArr[n] = [];
+
+          for(var j = 0; j < this.kbMsg.length; j++) {
+
+            reversedArr[n][j] = this.kbMsg[j][n];
+
+          }
+
         }
-    },
-    mounted(){
-        this.showPage(this.pageCurrent, null, true);
-    },
-    computed:{
+        this.kbMsgRer=reversedArr;
+
+        this.$store.state.loginFlag=true;
+        this.$store.state.userJob='学生';
+      },
+      trya(){
+        var sid='2016014359';
+        // alert(11);
+        this.axios.get('api/student/xuanke/getStudentInformation',{
+          params:{
+            sid:sid
+          }
+        }).then(res=>{
+          console.log(res);
+          this.list=res.data.data;
+          console.log(res.data.data)
+        })
+      }
+
     }
-}
- </script>
- 
+
+
+  }
+
+</script>
+
+<style lang='scss' scoped>
+  .main{
+    margin:0 auto;
+    // background:#409EFF;
+    width:100%;
+    height: 100%;
+  }
+
+  .container{
+    /*height:100%;*/
+    /*background:pink;*/
+    font-size:14px;
+    font-weight: normal;
+    /*width:50%;*/
+    .mytable{
+      /*background:pink;*/
+      /*width:100%;*/
+      /*height:100%;*/
+      /*display:block;*/
+    }
+     }
+  .el-header, .el-footer {
+    /*background-color: #B3C0D1;*/
+    text-align: center;
+    line-height: 60px;
+    text-align:center;
+  }
+  .el-header{
+    color:#409EFF;
+    font-size:25px;
+    font-family:Hiragino Sans GB;
+  }
+
+  .el-aside {
+    position:relative;
+    background-color: rgba(208, 222, 230, 0.47);
+    color: #333;
+    text-align: center;
+    line-height: 200px;
+  }
+
+  .el-main {
+    background-color: rgba(233, 238, 243, 0.36);
+    color: #333;
+    text-align: center;
+    line-height: 160px;
+  }
+
+  body > .el-container {
+    margin-bottom: 40px;
+  }
+
+  .el-container:nth-child(5) .el-aside,
+  .el-container:nth-child(6) .el-aside {
+    line-height: 260px;
+  }
+  .panel{
+    margin:20px;
+  }
+</style>

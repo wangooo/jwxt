@@ -24,6 +24,7 @@
               <el-menu-item index="Grzx">个人中心</el-menu-item>
               <!--<el-menu-item index="7"><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item>-->
               <el-button class="logout" size="small" @click="logout()">登出</el-button>
+              <el-tag type="success" class="xingqi">当前教学周{{xingqi}}</el-tag>
             </el-menu>
         </div>
     </div>
@@ -37,9 +38,16 @@ export default {
      data() {
       return {
         activeIndex: this.$route.name,
+        xingqi:''
       };
     },
+  mounted() {
+    this.loginFlagCsh()
+  },
     methods: {
+      loginFlagCsh(){
+        this.xingqi=localStorage.getItem("xingqiNow");
+      },
       handleSelect(key, keyPath) {
         console.log(key, keyPath);
       },
@@ -71,8 +79,13 @@ export default {
 </script>
 
 <style>
+
   .logout{
     float:right;
-    margin:15px 60px 0 0;
+    margin:15px 80px 0 0;
+  }
+  .xingqi{
+    float:right;
+    margin:15px 20px 0 0;
   }
 </style>
